@@ -1,9 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/users/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => User, user => user.transactions)
+  user: User;
 
   @Column({ name: 'user_id', nullable: false })
   userId: number;
@@ -11,7 +15,7 @@ export class Transaction {
   @Column({ name: 'status', nullable: false, default: 'UNPAID' })
   status: string;
 
-  @Column({ name: 'totalAmount', default: () => 0 })
+  @Column({ name: 'totalAmount', default: 159 })
   totalAmount: number;
 
   @Column({ name: 'date_created', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

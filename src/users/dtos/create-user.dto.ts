@@ -3,6 +3,5 @@ export class CreateUserDto {
     password: string;
     name: string;
     userType: string;
-    userAccountId: number;
     status: boolean;
 }

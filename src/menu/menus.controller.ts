@@ -28,18 +28,8 @@ export class MenusController {
 
     @Delete('delete/:id')
     delete(@Param('id') id: number) {
-        console.log('Received id:', id);
+        // console.log('Received id:', id);
         return this.menuService.delete(id);
     }
-
-    // @Post('/delete')
-    // delete(@Body() deleteMenuDto: DeleteMenuDto) {
-    //     if (!deleteMenuDto || !deleteMenuDto.id) {
-    //     throw new HttpException('Invalid request body', HttpStatus.BAD_REQUEST);
-    //     }
-
-    //     console.log('Received id:', deleteMenuDto.id);
-    //     return this.menuService.delete(deleteMenuDto.id);
-    // }
 
 }

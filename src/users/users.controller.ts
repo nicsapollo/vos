@@ -18,9 +18,14 @@ export class UsersController {
         return this.userService.create(dto)
     }
 
-    @Get()
+    @Get('/all')
     search(@Body() dto: CreateUserDto) {
         return this.userService.findMany()
+    }
+
+    @Get('/searchCustomers')
+    searchCustomers(@Body() dto: CreateUserDto) {
+        return this.userService.searchCustomers()
     }
 
     @Get(':id')

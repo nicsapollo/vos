@@ -3,19 +3,61 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Transaction } from "./transaction.entity";
 import { CreateTransactionDto } from "./dtos/create-transaction.dto";
+import { User } from "src/users/user.entity";
 
 @Injectable()
 export class TransactionsService {
-    constructor(@InjectRepository(Transaction) private readonly transactionRepository: Repository<Transaction>) { }
+    constructor(@InjectRepository(Transaction) private readonly transactionRepository: Repository<Transaction>,
+    @InjectRepository(User)private readonly userRepository: Repository<User>
+    ) { }
     
-    async create(dto: CreateTransactionDto) { 
-        const user = this.transactionRepository.create(dto);
+    async create(dto: CreateTransactionDto): Promise<Transaction> {
+        // Calculate the end time based on the current time and hours from the DTO
+        const currentTime = new Date();
+        const endTime = new Date(currentTime.getTime() + dto.hours * 60 * 60 * 1000); // Convert hours to milliseconds
 
-        return await this.transactionRepository.save(user)
+        // Create a new transaction entity
+        const transaction = new Transaction();
+        transaction.userId = dto.userId;
+        transaction.dateEndTime = endTime; // Set the end time
+
+        await this.userRepository.update(dto.userId, { status: true }); 
+
+        // Save the transaction to the database
+        return await this.transactionRepository.save(transaction);
     }
 
     findMany() {
         return this.transactionRepository.find();
+    }
+
+    async findManyWithUserNames(): Promise<Transaction[]> {
+    return this.transactionRepository
+      .createQueryBuilder('transaction')
+      .leftJoinAndSelect('transaction.user', 'user') // Assuming the relationship is named "user" in your Transaction entity
+      .getMany();
+    }
+
+    async checkout(id: number): Promise<any> {
+        // Find the transaction by its ID to get the associated user ID
+        const transaction = await this.transactionRepository.findOne({ where: { id } });
+
+        if (!transaction) {
+            throw new Error(`Transaction with ID ${id} not found.`);
+        }
+
+        const userId = transaction.userId;
+
+        // Get the current time
+        const currentTime = new Date();
+
+        // Update the transaction's dateEndTime to the current time
+        await this.transactionRepository.update({ id: id }, { dateEndTime: currentTime });
+
+        // Set the user's status to false
+        await this.userRepository.update(userId, { status: false });
+
+        return { message: 'Succesfully checkedout' }
     }
 
     findOne(id: number) {

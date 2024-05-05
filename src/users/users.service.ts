@@ -1,12 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
 import { User } from "./user.entity";
 import { CreateUserDto } from "./dtos/create-user.dto";
+import { Transaction } from "src/transactions/transaction.entity";
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) { }
+    constructor(@InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Transaction) // Inject TypeORM repository for Transaction entity
+    private readonly transactionRepository: Repository<Transaction>, // Use Repository<Transaction> directly
+   ) { }
     
     async create(dto: CreateUserDto) { 
         const user = this.userRepository.create(dto);
@@ -16,6 +21,32 @@ export class UsersService {
 
     findMany() {
         return this.userRepository.find();
+    }
+
+    async findCustomers(): Promise<User[]> {
+        return this.userRepository.find({ where: { userType: 'Customer' } });
+    }
+
+    async searchCustomers(): Promise<User[]> {
+        // Find all users with userType = 'Customers'
+        const customers = await this.userRepository.find({ where: { userType: 'Customer' } });
+
+        // Fetch transactions within the time range for each customer
+        const customersWithTransactions = await Promise.all(customers.map(async (user) => {
+            // Log user details for debugging
+
+            // Fetch transactions for the user within the specified time range
+            const transactions = await this.transactionRepository.find({
+                where: {
+                    userId: user.id,
+                    dateCreated: LessThanOrEqual(new Date()), // Current time
+                    dateEndTime: MoreThanOrEqual(new Date()), // Current time
+                },
+            });
+            user.transactions = transactions;
+            return user;
+        }));
+        return customersWithTransactions;
     }
 
     findOne(id: number) {

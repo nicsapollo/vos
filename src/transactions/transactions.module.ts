@@ -4,9 +4,10 @@ import { PrimaryGeneratedColumn } from "typeorm";
 import { Transaction } from './transaction.entity';
 import { TransactionsService } from "./transactions.service";
 import { TransactionsController } from "./transactions.controller";
+import { User } from "src/users/user.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Transaction])],
+    imports: [TypeOrmModule.forFeature([Transaction, User])],
     controllers: [TransactionsController],
     providers: [TransactionsService]
 })
