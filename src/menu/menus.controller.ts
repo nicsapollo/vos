@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put } from "@nestjs/common";
 import { MenusService } from "./menus.service";
 import { CreateMenuDto } from "./dtos/create-menu.dto";
 
@@ -6,7 +6,7 @@ import { CreateMenuDto } from "./dtos/create-menu.dto";
 export class MenusController {
     constructor(private readonly menuService: MenusService) { }
     
-    @Post()
+    @Post('/create')
     create(@Body() dto: CreateMenuDto) {
         return this.menuService.create(dto)
     }
@@ -26,9 +26,20 @@ export class MenusController {
         return this.menuService.update(id, dto);
     }
 
-    @Delete(':id')
+    @Delete('delete/:id')
     delete(@Param('id') id: number) {
+        console.log('Received id:', id);
         return this.menuService.delete(id);
     }
+
+    // @Post('/delete')
+    // delete(@Body() deleteMenuDto: DeleteMenuDto) {
+    //     if (!deleteMenuDto || !deleteMenuDto.id) {
+    //     throw new HttpException('Invalid request body', HttpStatus.BAD_REQUEST);
+    //     }
+
+    //     console.log('Received id:', deleteMenuDto.id);
+    //     return this.menuService.delete(deleteMenuDto.id);
+    // }
 
 }

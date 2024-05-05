@@ -33,7 +33,12 @@ export class MenusService {
     async delete(id: number) {
         const user = await this.menuRepository.findOne({ where: { id } });
 
-        return await this.menuRepository.remove(user);
+        const remove =  await this.menuRepository.remove(user);
+
+        return {
+            name: remove.name,
+            message: 'success'
+        }
     }
 
 }
