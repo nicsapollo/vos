@@ -10,6 +10,7 @@ import { MenusModule } from './menu/menus.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { TransactionItemsModule } from './transaction-items/transaction-items.module';
 import { JwtModule } from '@nestjs/jwt';
+import { RequestsModule } from './request/requests.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { JwtModule } from '@nestjs/jwt';
     MenusModule,
     TransactionsModule,
     TransactionItemsModule,
+    RequestsModule,
     JwtModule.register({
       secret: 'secret',
       signOptions: {expiresIn: '1d'}
