@@ -33,6 +33,11 @@ export class UsersController {
         return this.userService.findOne(+id)
     }
 
+    @Get('latestTransaction/:username')
+    getLatestTransaction(@Param('username') username: string) {
+        return this.userService.getLatestTransactionByUsername(username);
+    }
+
     @Get('getUsername/:username')
     findByUsername(@Param('username') username: string) {
         return this.userService.findByUsername(username)

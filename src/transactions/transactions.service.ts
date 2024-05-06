@@ -27,6 +27,7 @@ export class TransactionsService {
         return await this.transactionRepository.save(transaction);
     }
 
+
     findMany() {
         return this.transactionRepository.find();
     }
@@ -52,7 +53,7 @@ export class TransactionsService {
         const currentTime = new Date();
 
         // Update the transaction's dateEndTime to the current time
-        await this.transactionRepository.update({ id: id }, { dateEndTime: currentTime });
+        await this.transactionRepository.update({ id: id }, { dateEndTime: currentTime, status: "PAID" });
 
         // Set the user's status to false
         await this.userRepository.update(userId, { status: false });
@@ -77,5 +78,28 @@ export class TransactionsService {
 
         return await this.transactionRepository.remove(user);
     }
+
+    async getLatestTransactionByUsername(username: string): Promise<Transaction | null> {
+    // Find the user by username
+    const user = await this.userRepository.findOne({ where: { username } });
+
+    if (!user) {
+        // If user doesn't exist, return null
+        return null;
+    }
+
+    // Fetch the latest transaction for the user
+    const latestTransaction = await this.transactionRepository.findOne({
+        where: {
+            userId: user.id,
+        },
+        order: {
+            dateCreated: 'DESC', // Fetch the latest transaction based on the dateCreated column
+        },
+    });
+
+    return latestTransaction;
+}
+
 
 }

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
 import { User } from "./user.entity";
@@ -77,5 +77,27 @@ export class UsersService {
 
         return await this.userRepository.findOne({ where: { username } });
     }
+
+    async getLatestTransactionByUsername(username: string): Promise<Transaction | null> {
+    const user = await this.userRepository.findOne({ where: { username }, relations: ['transactions'] });
+
+    if (!user) {
+        throw new NotFoundException('User not found');
+    }
+
+    console.log("User: ", user); // Log user object for debugging
+
+    if (user.transactions.length === 0) {
+        return null; // No transactions found for this user
+    }
+
+    // Sorting transactions by dateCreated in descending order and returning the first one (latest)
+    const latestTransaction = user.transactions.sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime())[0];
+    
+    return latestTransaction;
+}
+
+
+
 
 }

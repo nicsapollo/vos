@@ -22,6 +22,7 @@ export class TransactionsController {
         return this.transactionService.findMany()
     }
 
+
     @Get('/allTransactions')
     searchTransactionsWithUser(@Body() dto: CreateTransactionDto) {
         return this.transactionService.findManyWithUserNames()
@@ -40,6 +41,20 @@ export class TransactionsController {
     @Delete(':id')
     delete(@Param('id') id: number) {
         return this.transactionService.delete(id);
+    }
+
+    @Get('/latest/:username')
+    async getLatestTransactionByUsername(@Param('username') username: string) {
+        try {
+            const latestTransaction = await this.transactionService.getLatestTransactionByUsername(username);
+            if (latestTransaction) {
+                return { success: true, transaction: latestTransaction };
+            } else {
+                return { success: false, message: 'User not found or no transaction found for the user.' };
+            }
+        } catch (error) {
+            return { success: false, message: 'An error occurred while fetching the latest transaction.' };
+        }
     }
 
 }
