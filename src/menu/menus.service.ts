@@ -31,29 +31,28 @@ export class MenusService {
     //     return await this.menuRepository.save(user);
     // }
 
-    async update(id: number, body: any) {
+    async update(id: number, updateMenuDto: UpdateMenuDto, file: Express.Multer.File): Promise<Menu> {
         const menu = await this.menuRepository.findOne({ where: { id } });
-        
+
         if (!menu) {
-        throw new Error(`Menu with id ${id} not found`);
+        throw new Error('Menu not found');
         }
+
+        // // Update menu properties from the DTO
+        menu.name = updateMenuDto.name;
+        menu.rating = updateMenuDto.rating;
+        menu.price = updateMenuDto.price;
+
+        // // Handle file upload if provided
+        // if (file) {
+        // // Assuming you have a property like 'imagePath' in your Menu entity
+        // menu.imagePath = file.path; // Store the file path or any other relevant data
+        // }
+
+        // Save the updated menu
+        await this.menuRepository.save(menu);
         
-        // Update menu properties from body
-        if (body.name) {
-        menu.name = body.name;
-        }
-        if (body.rating !== undefined) {
-        menu.rating = body.rating;
-        }
-        if (body.price) {
-        menu.price = body.price;
-        }
-        if (body.image) {
-        // Assuming body.image contains the binary data
-        menu.image = body.image;
-        }
-        
-        return await this.menuRepository.save(menu);
+        return menu;
     }
 
     async delete(id: number) {

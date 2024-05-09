@@ -32,21 +32,21 @@ export class MenusController {
     //     return this.menuService.update(id, dto);
     // }
 
-    @Put('edit/:id')
-        update(@Param('id') id: number, @Body() body: any) {
-        console.log('Received id:', id);
-        console.log('Received body:', body);
-        return this.menuService.update(id, body);
-    }
-
     // @Put('edit/:id')
-    // @UseInterceptors(FileInterceptor('file')) // This will parse 'file' field from form-data
-    // update(@Param('id') id: number, @Body() body: any, @UploadedFile() file: Express.Multer.File) {
+    //     update(@Param('id') id: number, @Body() body: any) {
     //     console.log('Received id:', id);
     //     console.log('Received body:', body);
-    //     console.log('Received file:', file); // This will contain the uploaded file object
-    //     return this.menuService.update(id, body, file); // Pass the file to your service method
+    //     return this.menuService.update(id, body);
     // }
+
+    @Put('edit/:id')
+    @UseInterceptors(FileInterceptor('file')) // This will parse 'file' field from form-data
+    update(@Param('id') id: number, @Body() body: any, @UploadedFile() file: Express.Multer.File) {
+        console.log('Received id:', id);
+        console.log('Received body:', body);
+        console.log('Received file:', file); // This will contain the uploaded file object
+        return this.menuService.update(id, body, file); // Pass the file to your service method
+    }
 
     @Delete('delete/:id')
     delete(@Param('id') id: number) {
