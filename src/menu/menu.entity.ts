@@ -11,8 +11,8 @@ export class Menu {
   @Column({ name: 'rating', type: 'decimal', precision: 3, scale: 1, default: 0 }) // Adjust precision and scale as needed
   rating: number;
 
-  @Column({ name: 'description', default: "" })
-  description: string;
+  @Column({ type: 'mediumblob', name: 'image', nullable: true })
+  image: Buffer; // Store the image as a buffer
 
   @Column({ name: 'price', type: 'decimal', precision: 6, scale: 2, default: 0 }) // Adjust precision and scale as needed
   price: number;
@@ -25,7 +25,4 @@ export class Menu {
 
   @Column({ name: 'date_last_updated', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dateLastUpdated: Date;
-
-  // @Column({ nullable: false, default: true })
-  // image: boolean;
 }

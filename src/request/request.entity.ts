@@ -14,6 +14,9 @@ export class Request {
   @Column({ name: 'description', default:"" })
   description: string;
 
+  @Column({ name: 'hours', default: 0 })
+  hours: number;
+
   @Column({ name: 'status', default: "PENDING" })
   status: string;
 

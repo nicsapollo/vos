@@ -1,4 +1,4 @@
-export class CreateMenuDto {
+export class UpdateMenuDto {
     name: string;
     rating: number;
     price: number;
