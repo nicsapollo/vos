@@ -44,10 +44,10 @@ export class MenusService {
         menu.price = updateMenuDto.price;
 
         // // Handle file upload if provided
-        // if (file) {
-        // // Assuming you have a property like 'imagePath' in your Menu entity
-        // menu.imagePath = file.path; // Store the file path or any other relevant data
-        // }
+        if (file) {
+        // Assuming you have a property like 'imagePath' in your Menu entity
+        menu.image = file.filename; // Store the file path or any other relevant data
+        }
 
         // Save the updated menu
         await this.menuRepository.save(menu);

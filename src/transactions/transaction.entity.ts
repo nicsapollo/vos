@@ -9,8 +9,8 @@ export class Transaction {
   @ManyToOne(() => User, user => user.transactions)
   user: User;
 
-  @Column({ name: 'user_id', nullable: false })
-  userId: number;
+  // @Column({ name: 'userId', nullable: false })
+  // userId: number;
 
   @Column({ name: 'status', nullable: false, default: 'UNPAID' })
   status: string;

@@ -33,12 +33,10 @@ export class UsersService {
 
         // Fetch transactions within the time range for each customer
         const customersWithTransactions = await Promise.all(customers.map(async (user) => {
-            // Log user details for debugging
-
             // Fetch transactions for the user within the specified time range
             const transactions = await this.transactionRepository.find({
                 where: {
-                    userId: user.id,
+                    user: user, // Corrected line
                     dateCreated: LessThanOrEqual(new Date()), // Current time
                     dateEndTime: MoreThanOrEqual(new Date()), // Current time
                 },

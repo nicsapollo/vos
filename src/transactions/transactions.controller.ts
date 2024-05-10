@@ -28,6 +28,11 @@ export class TransactionsController {
         return this.transactionService.findManyWithUserNames()
     }
 
+    @Get('/allTransactionsLog')
+    searchTransactionLogWithUser(@Body() dto: CreateTransactionDto) {
+        return this.transactionService.findAllWithUserNames()
+    }
+
     @Get(':id')
     findOne(@Param('id') id: number) {
         return this.transactionService.findOne(+id)

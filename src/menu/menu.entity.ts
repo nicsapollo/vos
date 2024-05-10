@@ -11,8 +11,8 @@ export class Menu {
   @Column({ name: 'rating', type: 'decimal', precision: 3, scale: 1, default: 0 }) // Adjust precision and scale as needed
   rating: number;
 
-  @Column({ type: 'mediumblob', name: 'image', nullable: true })
-  image: Buffer; // Store the image as a buffer
+  @Column({ name: 'image', nullable: true })
+  image: string; // Store the image as a buffer
 
   @Column({ name: 'price', type: 'decimal', precision: 6, scale: 2, default: 0 }) // Adjust precision and scale as needed
   price: number;

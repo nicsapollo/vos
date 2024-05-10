@@ -26,6 +26,7 @@ import { RequestsModule } from './request/requests.module';
         database: configService.get('DB_NAME'),
         entities: [join(process.cwd(), 'dist/**/*.entity.js')],
         synchronize: true,
+        logging: true,
       }),
       inject: [ConfigService],
     }),
