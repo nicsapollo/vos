@@ -5,4 +5,6 @@ export class CreateRequestDto {
     status: string;
     remarks: string;
     hours: number;
+    userId: number;
+    transactionId: number;
 }

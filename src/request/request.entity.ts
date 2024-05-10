@@ -1,14 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Transaction } from 'src/transactions/transaction.entity';
+import { User } from 'src/users/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Request {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'name', nullable: false })
+  @ManyToOne(() => User, user => user.requests)
+  user: User;
+
+  @ManyToOne(() => Transaction, transaction => transaction.requests)
+  transaction: Transaction;
+
+  @Column({ name: 'name', nullable: true, default:"" })
   name: string;
 
-  @Column({ name: 'request_type', nullable: false })
+  @Column({ name: 'request_type', nullable: false, default:"" })
   requestType: string;
 
   @Column({ name: 'description', default:"" })

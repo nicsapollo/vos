@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Transaction } from 'src/transactions/transaction.entity'; // Assuming Transaction entity exists
+import { Request } from 'src/request/request.entity';
 
 @Entity()
 export class User {
@@ -30,4 +31,7 @@ export class User {
 
   @OneToMany(() => Transaction, transaction => transaction.user)
   transactions: Transaction[];
+
+  @OneToMany(() => Request, request => request.user)
+  requests: Request[];
 }

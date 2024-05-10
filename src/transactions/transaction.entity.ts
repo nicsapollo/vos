@@ -1,5 +1,6 @@
 import { User } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Request } from 'src/request/request.entity';
 
 @Entity()
 export class Transaction {
@@ -8,6 +9,9 @@ export class Transaction {
 
   @ManyToOne(() => User, user => user.transactions)
   user: User;
+
+  @OneToMany(() => Request, request => request.transaction)
+  requests: Request[];
 
   // @Column({ name: 'userId', nullable: false })
   // userId: number;

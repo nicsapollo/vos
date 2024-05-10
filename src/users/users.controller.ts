@@ -75,7 +75,8 @@ export class UsersController {
         let responseUser = {
             user : user.username,
             type: user.userType,
-            name: user.name
+            name: user.name,
+            id: user.id
 
         }
         // return user
