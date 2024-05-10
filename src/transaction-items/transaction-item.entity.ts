@@ -8,11 +8,17 @@ export class TransactionItem {
   @Column({ name: 'transaction_id', nullable: false })
   transactionId: number;
 
+  @Column({ name: 'request_id', nullable: false })
+  requestId: number;
+
   @Column({ name: 'menu_id', nullable: false })
   menuId: number;
 
   @Column({ nullable: false, default: false })
   status: boolean;
+
+  @Column({ name: 'quantity', nullable: false })
+  quantity: number;
 
   @Column({ name: 'date_created', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dateCreated: Date;

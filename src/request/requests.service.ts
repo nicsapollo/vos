@@ -9,9 +9,9 @@ export class RequestsService {
     constructor(@InjectRepository(Request) private readonly requestRepository: Repository<Request>) { }
     
     async create(dto: CreateRequestDto) { 
-        const user = this.requestRepository.create(dto);
+        const request = this.requestRepository.create(dto);
 
-        return await this.requestRepository.save(user)
+        return await this.requestRepository.save(request)
     }
 
     findMany() {
@@ -23,17 +23,17 @@ export class RequestsService {
     }
 
     async update(id: number ,dto: CreateRequestDto) {
-        const user = await this.requestRepository.findOne({ where: { id } });
+        const request = await this.requestRepository.findOne({ where: { id } });
         
-        Object.assign(user, dto);
+        Object.assign(request, dto);
 
-        return await this.requestRepository.save(user);
+        return await this.requestRepository.save(request);
     }
 
     async delete(id: number) {
-        const user = await this.requestRepository.findOne({ where: { id } });
+        const request = await this.requestRepository.findOne({ where: { id } });
 
-        const remove =  await this.requestRepository.remove(user);
+        const remove =  await this.requestRepository.remove(request);
 
         return {
             message: 'success'

@@ -21,7 +21,7 @@ export class RequestsController {
         return this.requestService.findOne(+id)
     }
 
-    @Put(':id')
+    @Put('/updateRequest/:id')
     update(@Param('id') id: number, @Body() dto: CreateRequestDto) {
         return this.requestService.update(id, dto);
     }

@@ -14,6 +14,9 @@ export class Request {
   @Column({ name: 'description', default:"" })
   description: string;
 
+  @Column({ name: 'remarks', default:"" })
+  remarks: string;
+
   @Column({ name: 'hours', default: 0 })
   hours: number;
 
