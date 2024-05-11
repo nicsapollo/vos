@@ -6,9 +6,10 @@ import { RequestsService } from "./requests.service";
 import { RequestsController } from "./requests.controller";
 import { Transaction } from "src/transactions/transaction.entity";
 import { User } from "src/users/user.entity";
+import { TransactionItem } from "src/transaction-items/transaction-item.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Request, User, Transaction])],
+    imports: [TypeOrmModule.forFeature([Request, User, Transaction, TransactionItem])],
     controllers: [RequestsController],
     providers: [RequestsService]
 })

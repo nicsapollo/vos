@@ -4,11 +4,13 @@ import { Repository } from "typeorm";
 import { Transaction } from "./transaction.entity";
 import { CreateTransactionDto } from "./dtos/create-transaction.dto";
 import { User } from "src/users/user.entity";
+import { TransactionItem } from "src/transaction-items/transaction-item.entity";
 
 @Injectable()
 export class TransactionsService {
     constructor(@InjectRepository(Transaction) private readonly transactionRepository: Repository<Transaction>,
-    @InjectRepository(User)private readonly userRepository: Repository<User>
+        @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(TransactionItem)private readonly transactionItemRepository: Repository<TransactionItem>
     ) { }
     
     async create(dto: CreateTransactionDto): Promise<Transaction> {
@@ -28,6 +30,31 @@ export class TransactionsService {
         const transaction = new Transaction();
         transaction.user = user;
         transaction.dateEndTime = endTime; // Set the end time
+
+
+        // Create a new transaction-item entity
+        const transactionItem = new TransactionItem();
+        transactionItem.quantity = dto.hours;
+        transactionItem.amount = dto.hours * 159;
+        console.log('Created new transaction item:', transactionItem);
+
+        // Object.assign(transactionItem, dto);
+
+        if (!transaction.transactionItems) {
+            transaction.transactionItems = []; // Initialize the array if it doesn't exist
+        }
+
+        transaction.totalAmount = transactionItem.amount;
+        console.log('Updated total amount:', transaction.totalAmount);
+
+        transaction.transactionItems.push(transactionItem);
+        console.log('Added transaction item to transaction:', transactionItem);
+
+        // Optionally, log the entire transaction object for further inspection
+        console.log('Updated transaction object:', transaction);
+
+        // Save the transactionItem to the database
+        await this.transactionItemRepository.save(transactionItem);
 
         // Save the transaction to the database
         const savedTransaction = await this.transactionRepository.save(transaction);

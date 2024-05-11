@@ -1,6 +1,7 @@
 import { Transaction } from 'src/transactions/transaction.entity';
+import { TransactionItem } from 'src/transaction-items/transaction-item.entity';
 import { User } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity()
 export class Request {
@@ -11,7 +12,10 @@ export class Request {
   user: User;
 
   @ManyToOne(() => Transaction, transaction => transaction.requests)
-  transaction: Transaction;
+  transactions: Transaction;
+
+  @OneToOne(() => TransactionItem, transactionItem => transactionItem.request)
+  transactionItem: TransactionItem;
 
   @Column({ name: 'name', nullable: true, default:"" })
   name: string;

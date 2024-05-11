@@ -1,24 +1,32 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Transaction } from 'src/transactions/transaction.entity';
+import { Request } from 'src/request/request.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity()
 export class TransactionItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'transaction_id', nullable: false })
-  transactionId: number;
+  @ManyToOne(() => Transaction, transaction => transaction.transactionItems)
+  transaction: Transaction;
 
-  @Column({ name: 'request_id', nullable: false })
-  requestId: number;
+  @OneToOne(() => Request, request => request.transactionItem)
+  request: Request;
 
-  @Column({ name: 'menu_id', nullable: false })
+  @Column({ name: 'menu_id', nullable: true })
   menuId: number;
 
-  @Column({ nullable: false, default: false })
-  status: boolean;
+  @Column({ nullable: false, default: "HOUR" })
+  itemType: string;
+
+  @Column({ nullable: false, default: "UNPAID" })
+  status: string;
 
   @Column({ name: 'quantity', nullable: false })
   quantity: number;
+
+  @Column({ name: 'amount', type: 'decimal', precision: 8, scale: 2, default: 0 }) // Adjust precision and scale as needed
+  amount: number;
 
   @Column({ name: 'date_created', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dateCreated: Date;

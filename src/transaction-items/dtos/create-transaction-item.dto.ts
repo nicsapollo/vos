@@ -1,4 +1,5 @@
 export class CreateTransactionItemDto {
     transactionId: number;
-    status: boolean;
+    itemType: string;
+    status: string;
 }
