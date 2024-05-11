@@ -122,6 +122,10 @@ export class TransactionsService {
         return this.transactionRepository.findOne({ where: { id } });
     }
 
+    transactionWithItems(id: number) {
+        return this.transactionRepository.findOne({ where: { id }, relations: ["transactionItems"] });
+    }
+
     async update(id: number, dto: CreateTransactionDto) {
         const user = await this.transactionRepository.findOne({ where: { id } });
         

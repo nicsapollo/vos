@@ -17,6 +17,11 @@ export class TransactionsController {
         return this.transactionService.checkout(id)
     }
 
+    @Post('/transactionWithItems/:id')
+    transactionWithItems(@Param('id') id: number) {
+        return this.transactionService.transactionWithItems(id)
+    }
+
     @Get('/all')
     search(@Body() dto: CreateTransactionDto) {
         return this.transactionService.findMany()
