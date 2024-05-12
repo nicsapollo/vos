@@ -7,6 +7,8 @@ import { Express } from 'express'; // Import Express
 import { storage } from './storage.config';
 import { Response } from 'express';
 import * as path from 'path';
+import { join, normalize } from 'path';
+import * as fs from 'fs';
 
 @Controller('menus')
 export class MenusController {
@@ -42,14 +44,40 @@ export class MenusController {
     //     return res.json(menuItemsWithImageUrl);
     // }
 
+    // @Get('/images/:fileName')
+    // async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
+    //     // Set the content type based on the file extension
+    //     res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type as per your file type
+
+    //     // Send the image file
+    //     // const absolutePath = join(__dirname, '..', '..', '..', 'uploads', 'menu_files', fileName);
+    //     res.sendFile(fileName, { root: path.join(__dirname, '..', '..', '..','uploads', 'menu_files') });
+    //     // Adjust the path to match your project structure
+    // }
+
+    @Get('imageItem/:id/')
+    async getAvatar(@Param('id') id: string, @Res() res: Response): Promise<void> {
+        const imagePath = `../vos/uploads/menu_files/${id}`;
+        const stream = fs.createReadStream(imagePath);
+        stream.pipe(res);
+    }
+
     @Get('/images/:fileName')
     async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
-        // Set the content type based on the file extension
-        res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type as per your file type
+        try {
+            // Set the content type based on the file extension
+            res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type as per your file type
 
-        // Send the image file
-        res.sendFile(fileName, { root: path.join(__dirname, '..', 'public', 'images') });
-        // Adjust the path to match your project structure
+            // Construct the absolute path to the file
+            const absolutePath = join(__dirname, '..', '..',  'uploads', 'menu_files', fileName);
+            const normalizedPath = normalize(absolutePath);
+
+            // Send the image file
+            res.sendFile(normalizedPath);
+        } catch (error) {
+            console.error('Error while sending file:', error);
+            res.status(404).send({ message: 'File not found' });
+        }
     }
 
     // @Put('edit/:id')
@@ -80,5 +108,7 @@ export class MenusController {
         // console.log('Received id:', id);
         return this.menuService.delete(id);
     }
+
+    
 
 }

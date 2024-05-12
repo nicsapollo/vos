@@ -1,9 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { TransactionItem } from 'src/transaction-items/transaction-item.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 
 @Entity()
 export class Menu {
   @PrimaryGeneratedColumn()
   id: number;
+  
+  @OneToOne(() => TransactionItem, transactionItem => transactionItem.menu)
+  transactionItem: TransactionItem;
 
   @Column({ name: 'name', nullable: false })
   name: string;

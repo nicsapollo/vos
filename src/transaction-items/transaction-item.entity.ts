@@ -1,6 +1,7 @@
 import { Transaction } from 'src/transactions/transaction.entity';
 import { Request } from 'src/request/request.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Menu } from 'src/menu/menu.entity';
 
 @Entity()
 export class TransactionItem {
@@ -13,8 +14,8 @@ export class TransactionItem {
   @OneToOne(() => Request, request => request.transactionItem)
   request: Request;
 
-  @Column({ name: 'menu_id', nullable: true })
-  menuId: number;
+  @OneToOne(() => Menu, menu => menu.transactionItem)
+  menu: Menu;
 
   @Column({ nullable: false, default: "HOUR" })
   itemType: string;
