@@ -15,8 +15,18 @@ export class MenusController {
     constructor(private readonly menuService: MenusService) { }
     
     @Post('/create')
-    create(@Body() dto: CreateMenuDto) {
-        return this.menuService.create(dto)
+    @UseInterceptors(FileInterceptor('file', { storage })) // This will parse 'file' field from form-data
+    create(@Body() dto: CreateMenuDto, @UploadedFile() file: Express.Multer.File) {
+        return this.menuService.create(dto, file)
+    }
+
+    @Put('edit/:id')
+    @UseInterceptors(FileInterceptor('file', { storage })) // This will parse 'file' field from form-data
+    update(@Param('id') id: number, @Body() body: any, @UploadedFile() file: Express.Multer.File) {
+        console.log('Received id:', id);
+        console.log('Received body:', body);
+        console.log('Received file:', file); // This will contain the uploaded file object
+        return this.menuService.update(id, body, file); // Pass the file to your service method
     }
 
     @Get('/all')
@@ -93,15 +103,6 @@ export class MenusController {
     //     console.log('Received body:', body);
     //     return this.menuService.update(id, body);
     // }
-
-    @Put('edit/:id')
-    @UseInterceptors(FileInterceptor('file', { storage })) // This will parse 'file' field from form-data
-    update(@Param('id') id: number, @Body() body: any, @UploadedFile() file: Express.Multer.File) {
-        console.log('Received id:', id);
-        console.log('Received body:', body);
-        console.log('Received file:', file); // This will contain the uploaded file object
-        return this.menuService.update(id, body, file); // Pass the file to your service method
-    }
 
     @Delete('delete/:id')
     delete(@Param('id') id: number) {

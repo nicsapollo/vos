@@ -9,27 +9,20 @@ import { UpdateMenuDto } from "./dtos/update-menu.dto";
 export class MenusService {
     constructor(@InjectRepository(Menu) private readonly menuRepository: Repository<Menu>) { }
     
-    async create(dto: CreateMenuDto) { 
-        const user = this.menuRepository.create(dto);
+    async create(dto: CreateMenuDto, file: Express.Multer.File): Promise<Menu> { 
+        const menu = this.menuRepository.create(dto);
 
-        return await this.menuRepository.save(user)
+        if (!menu) {
+        throw new Error('Failed to Save Menu');
+        }
+
+        if (file) {
+        // Assuming you have a property like 'imagePath' in your Menu entity
+        menu.image = file.filename; // Store the file path or any other relevant data
+        }
+
+        return await this.menuRepository.save(menu)
     }
-
-    findMany() {
-        return this.menuRepository.find();
-    }
-
-    findOne(id: number) {
-        return this.menuRepository.findOne({ where: { id } });
-    }
-
-    // async update(id: number ,dto: UpdateMenuDto) {
-    //     const user = await this.menuRepository.findOne({ where: { id } });
-        
-    //     Object.assign(user, dto);
-
-    //     return await this.menuRepository.save(user);
-    // }
 
     async update(id: number, updateMenuDto: UpdateMenuDto, file: Express.Multer.File): Promise<Menu> {
         const menu = await this.menuRepository.findOne({ where: { id } });
@@ -50,10 +43,26 @@ export class MenusService {
         }
 
         // Save the updated menu
-        await this.menuRepository.save(menu);
-        
-        return menu;
+        return await this.menuRepository.save(menu);
     }
+
+    findMany() {
+        return this.menuRepository.find();
+    }
+
+    findOne(id: number) {
+        return this.menuRepository.findOne({ where: { id } });
+    }
+
+    // async update(id: number ,dto: UpdateMenuDto) {
+    //     const user = await this.menuRepository.findOne({ where: { id } });
+        
+    //     Object.assign(user, dto);
+
+    //     return await this.menuRepository.save(user);
+    // }
+
+    
 
     async delete(id: number) {
         const user = await this.menuRepository.findOne({ where: { id } });
