@@ -130,36 +130,42 @@ export class TransactionsService {
 
     async transactionWithItems(id: number) {
 
-        const transactionWithItemsAndMenu = [];
+        const transaction = await this.transactionRepository.findOne({ where: { id: id } })
+        const transactionItems = await this.transactionItemRepository.find({ where: { transaction: transaction } })
 
-        const transaction =  this.transactionRepository
-        .createQueryBuilder('transaction')
-        .leftJoinAndSelect('transaction.transactionItems', 'transactionItem')
-        .where('transaction.id = :id', { id })
-        .andWhere('transactionItem.status != :status', { status: 'PENDING' })
-            .getOne();
+        // const transaction =  this.transactionRepository
+        // .createQueryBuilder('transaction')
+        // .leftJoinAndSelect('transaction.transactionItems', 'transactionItem')
+        // .where('transaction.id = :id', { id })
+        // .andWhere('transactionItem.status != :status', { status: 'PENDING' })
+        //     .getOne();
         
         // transactionWithItemsAndMenu.push({ transaction});
+
+        const ItemsAndMenu = [];
         
         // Fetch menu for each transaction item
-        for (const transactionItem of (await transaction).transactionItems) {
+        for (const transactionItem of transactionItems) {
             if (transactionItem.menuId) {
                 const menuId = transactionItem.menuId; // Assuming 'menuId' is the column name for menu ID
 
                 // Fetch menu for the current transactionItem
                 const menu = await this.menuRepository.findOne({ where: { id: menuId } }); // Adjust the repository name and method as per your setup
-
-                if (menu) {
-                    transactionWithItemsAndMenu.push({ transactionItem, menu });
-                }
                 
+                if (menu) {
+                    ItemsAndMenu.push({ transactionItem, menu });
+                }
             }
-            transactionWithItemsAndMenu.push({transactionItem});
+            if (!transactionItem.menuId) {
+                ItemsAndMenu.push({ transactionItem });
+            }
+            
+                
         }
-        
-        return transactionWithItemsAndMenu
 
-        // return transaction;
+        transaction.transactionItemsAndMenu = ItemsAndMenu;
+
+        return transaction;
     }
 
     async update(id: number, dto: CreateTransactionDto) {

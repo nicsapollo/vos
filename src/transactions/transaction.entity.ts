@@ -35,4 +35,6 @@ export class Transaction {
   @Column({ name: 'date_last_updated', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dateLastUpdated: Date;
 
+  transactionItemsAndMenu: any[];
+
 }
