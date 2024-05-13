@@ -183,6 +183,45 @@ export class RequestsService {
 
         }
 
+        if (request.requestType == 'ORDER') { 
+            
+            const transaction = request.transactions;
+
+            // Fetch transactionItems related to the transaction
+            const transactionItems = await this.transactionItemRepository.find({
+                where: { transaction: { id: transaction.id } },
+                relations: ["transaction"] // Assuming the name of the relation in TransactionItem entity is "transaction"
+            });
+            if (!transaction.transactionItems) {
+                transaction.transactionItems = []; // Initialize the array if it doesn't exist
+            }
+
+            // Push each transactionItem from transactionItems to transaction.transactionItems
+            for (const transactionItem of transactionItems) {
+                if (transactionItem.status == 'PENDING' && dto.status == 'APPROVED') {
+                    transactionItem.status = 'UNPAID'
+                    const tA = parseFloat(transaction.totalAmount + "");
+                    const a = parseFloat(transactionItem.amount + "");
+                    const total = tA + a;
+                    transaction.totalAmount = total;
+                } else {
+                    transactionItem.status = 'CANCELLED'
+                    
+                }
+                await this.transactionItemRepository.save(transactionItem);
+                transaction.transactionItems.push(transactionItem);
+            };
+
+            console.log('Transaction:', transaction); // Log the value of transaction
+            if (!transaction) {
+                throw new Error('Transaction not found');
+            }
+
+            // Save the updated transaction
+            await this.transactionRepository.save(transaction);
+
+        }
+
         Object.assign(request, dto);
 
         return await this.requestRepository.save(request);
