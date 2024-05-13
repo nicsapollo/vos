@@ -6,9 +6,10 @@ import { TransactionsService } from "./transactions.service";
 import { TransactionsController } from "./transactions.controller";
 import { User } from "src/users/user.entity";
 import { TransactionItem } from "src/transaction-items/transaction-item.entity";
+import { Menu } from "src/menu/menu.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Transaction, User, TransactionItem])],
+    imports: [TypeOrmModule.forFeature([Transaction, User, TransactionItem, Menu])],
     controllers: [TransactionsController],
     providers: [TransactionsService]
 })

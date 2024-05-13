@@ -5,12 +5,14 @@ import { Transaction } from "./transaction.entity";
 import { CreateTransactionDto } from "./dtos/create-transaction.dto";
 import { User } from "src/users/user.entity";
 import { TransactionItem } from "src/transaction-items/transaction-item.entity";
+import { Menu } from "src/menu/menu.entity";
 
 @Injectable()
 export class TransactionsService {
     constructor(@InjectRepository(Transaction) private readonly transactionRepository: Repository<Transaction>,
         @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(TransactionItem)private readonly transactionItemRepository: Repository<TransactionItem>
+        @InjectRepository(TransactionItem) private readonly transactionItemRepository: Repository<TransactionItem>,
+    @InjectRepository(Menu)private readonly menuRepository: Repository<Menu>
     ) { }
     
     async create(dto: CreateTransactionDto): Promise<Transaction> {
@@ -127,13 +129,38 @@ export class TransactionsService {
     // }
 
     async transactionWithItems(id: number) {
-    return this.transactionRepository
-      .createQueryBuilder('transaction')
-      .leftJoinAndSelect('transaction.transactionItems', 'transactionItem')
-      .where('transaction.id = :id', { id })
-      .andWhere('transactionItem.status != :status', { status: 'PENDING' })
-      .getOne();
-  }
+
+        const transactionWithItemsAndMenu = [];
+
+        const transaction =  this.transactionRepository
+        .createQueryBuilder('transaction')
+        .leftJoinAndSelect('transaction.transactionItems', 'transactionItem')
+        .where('transaction.id = :id', { id })
+        .andWhere('transactionItem.status != :status', { status: 'PENDING' })
+            .getOne();
+        
+        // transactionWithItemsAndMenu.push({ transaction});
+        
+        // Fetch menu for each transaction item
+        for (const transactionItem of (await transaction).transactionItems) {
+            if (transactionItem.menuId) {
+                const menuId = transactionItem.menuId; // Assuming 'menuId' is the column name for menu ID
+
+                // Fetch menu for the current transactionItem
+                const menu = await this.menuRepository.findOne({ where: { id: menuId } }); // Adjust the repository name and method as per your setup
+
+                if (menu) {
+                    transactionWithItemsAndMenu.push({ transactionItem, menu });
+                }
+                
+            }
+            transactionWithItemsAndMenu.push({transactionItem});
+        }
+        
+        return transactionWithItemsAndMenu
+
+        // return transaction;
+    }
 
     async update(id: number, dto: CreateTransactionDto) {
         const user = await this.transactionRepository.findOne({ where: { id } });

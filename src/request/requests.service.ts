@@ -198,7 +198,7 @@ export class RequestsService {
 
             // Push each transactionItem from transactionItems to transaction.transactionItems
             for (const transactionItem of transactionItems) {
-                if (transactionItem.status == 'PENDING' && dto.status == 'APPROVED') {
+                if (transactionItem.status == 'PENDING' && dto.status == 'APPROVED' && transactionItem.itemType == 'FOOD') {
                     transactionItem.status = 'UNPAID'
                     const tA = parseFloat(transaction.totalAmount + "");
                     const a = parseFloat(transactionItem.amount + "");
