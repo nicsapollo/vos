@@ -11,6 +11,11 @@ export class RequestsController {
         return this.requestService.create(dto)
     }
 
+    @Post('/sendOrderRequest')
+    createOrder(@Body() dto: CreateRequestDto, @Body() menuItemList: any) {
+        return this.requestService.createOrder(dto, menuItemList)
+    }
+
     @Get('/all')
     search() {
         return this.requestService.findMany()

@@ -122,9 +122,18 @@ export class TransactionsService {
         return this.transactionRepository.findOne({ where: { id } });
     }
 
-    transactionWithItems(id: number) {
-        return this.transactionRepository.findOne({ where: { id }, relations: ["transactionItems"] });
-    }
+    // transactionWithItems(id: number) {
+    //     return this.transactionRepository.findOne({ where: { id }, relations: ["transactionItems"] });
+    // }
+
+    async transactionWithItems(id: number) {
+    return this.transactionRepository
+      .createQueryBuilder('transaction')
+      .leftJoinAndSelect('transaction.transactionItems', 'transactionItem')
+      .where('transaction.id = :id', { id })
+      .andWhere('transactionItem.status != :status', { status: 'PENDING' })
+      .getOne();
+  }
 
     async update(id: number, dto: CreateTransactionDto) {
         const user = await this.transactionRepository.findOne({ where: { id } });

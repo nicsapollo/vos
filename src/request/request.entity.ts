@@ -1,7 +1,7 @@
 import { Transaction } from 'src/transactions/transaction.entity';
 import { TransactionItem } from 'src/transaction-items/transaction-item.entity';
 import { User } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Request {
@@ -14,8 +14,8 @@ export class Request {
   @ManyToOne(() => Transaction, transaction => transaction.requests)
   transactions: Transaction;
 
-  @OneToOne(() => TransactionItem, transactionItem => transactionItem.request)
-  transactionItem: TransactionItem;
+  @OneToMany(() => TransactionItem, transactionItem => transactionItem.request)
+  transactionItems: TransactionItem[];
 
   @Column({ name: 'name', nullable: true, default:"" })
   name: string;
@@ -25,6 +25,9 @@ export class Request {
 
   @Column({ name: 'description', default:"" })
   description: string;
+
+  @Column({ name: 'menu_items', default:"" })
+  menu_items: string;
 
   @Column({ name: 'remarks', default:"" })
   remarks: string;

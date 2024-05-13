@@ -21,6 +21,11 @@ export class TransactionItemsController {
         return this.transactionItemService.findOne(+id)
     }
 
+    @Get('itemsMenu/:id')
+    findMany(@Param('id') id: number) {
+        return this.transactionItemService.findManyitems(id)
+    }
+
     @Put(':id')
     update(@Param('id') id: number, @Body() dto: CreateTransactionItemDto) {
         return this.transactionItemService.update(id, dto);

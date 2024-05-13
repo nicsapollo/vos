@@ -6,8 +6,8 @@ export class Menu {
   @PrimaryGeneratedColumn()
   id: number;
   
-  @OneToOne(() => TransactionItem, transactionItem => transactionItem.menu)
-  transactionItem: TransactionItem;
+  // @OneToOne(() => TransactionItem, transactionItem => transactionItem.menu)
+  // transactionItem: TransactionItem;
 
   @Column({ name: 'name', nullable: false })
   name: string;

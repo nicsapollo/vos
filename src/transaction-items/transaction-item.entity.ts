@@ -1,6 +1,6 @@
 import { Transaction } from 'src/transactions/transaction.entity';
 import { Request } from 'src/request/request.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { Menu } from 'src/menu/menu.entity';
 
 @Entity()
@@ -11,11 +11,15 @@ export class TransactionItem {
   @ManyToOne(() => Transaction, transaction => transaction.transactionItems)
   transaction: Transaction;
 
-  @OneToOne(() => Request, request => request.transactionItem)
+  @ManyToOne(() => Request, request => request.transactionItems)
   request: Request;
 
-  @OneToOne(() => Menu, menu => menu.transactionItem)
-  menu: Menu;
+  // @OneToOne(() => Menu, menu => menu.transactionItem)
+  // @JoinColumn() // Specify that this entity owns the relationship
+  // menu: Menu;
+
+  @Column({ name: 'menuId', nullable: true })
+  menuId: number;
 
   @Column({ nullable: false, default: "HOUR" })
   itemType: string;
