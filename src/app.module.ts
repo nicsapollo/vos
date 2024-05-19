@@ -11,6 +11,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { TransactionItemsModule } from './transaction-items/transaction-items.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RequestsModule } from './request/requests.module';
+import { MyGateway } from './notification/notification.gateway';
 
 @Module({
   imports: [
@@ -43,6 +44,6 @@ import { RequestsModule } from './request/requests.module';
     
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MyGateway],
 })
 export class AppModule {}
