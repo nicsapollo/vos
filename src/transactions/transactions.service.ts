@@ -146,23 +146,26 @@ export class TransactionsService {
         
         // Fetch menu for each transaction item
         for (const transactionItem of transactionItems) {
-            if (transactionItem.menuId) {
-                const menuId = transactionItem.menuId; // Assuming 'menuId' is the column name for menu ID
+            if (transactionItem.status != 'PENDING') {
+                if (transactionItem.menuId) {
+                    const menuId = transactionItem.menuId; // Assuming 'menuId' is the column name for menu ID
 
-                // Fetch menu for the current transactionItem
-                const menu = await this.menuRepository.findOne({ where: { id: menuId } }); // Adjust the repository name and method as per your setup
-                
-                if (menu) {
-                    ItemsAndMenu.push({ transactionItem, menu });
+                    // Fetch menu for the current transactionItem
+                    const menu = await this.menuRepository.findOne({ where: { id: menuId } }); // Adjust the repository name and method as per your setup
+                    
+                    if (menu) {
+                        ItemsAndMenu.push({ transactionItem, menu });
+                    }
+                }
+                if (!transactionItem.menuId) {
+                    ItemsAndMenu.push({ transactionItem });
                 }
             }
-            if (!transactionItem.menuId) {
-                ItemsAndMenu.push({ transactionItem });
-            }
+            
             
                 
         }
-
+        
         transaction.transactionItemsAndMenu = ItemsAndMenu;
 
         return transaction;
